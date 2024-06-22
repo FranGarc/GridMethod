@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Diagonal Line Drawer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        canvas {
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+        input, button {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Diagonal Line Drawer</h1>
+    <input type="file" id="upload" accept="image/*">
+    <input type="color" id="lineColor" value="#ff0000">
+    
+    <div>
+        <button id="drawCross">Draw Cross</button>
+        <button id="drawDiagonal">Draw Diagonal</button>
+        <button id="drawDiamond1">Draw Diamond 1</button>
+        <button id="drawDiamond2">Draw Diamond 2</button>
+        <button id="drawDiamond3">Draw Diamond 3</button>
+        <button id="drawDiamond4">Draw Diamond 4</button>
+    </div>
+    <button id="clearLines">Clear Lines</button>
+    </div>
+    <a id="downloadLink" download="modified-image.png" style="display:none;">Download Image</a>
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
