@@ -13,5 +13,5 @@ v 2.0 -
 
 ![Diamond 16x16 (former level 4 diamond grid)](https://github.com/FranGarc/GridMethod/blob/main/screenshots/grid_method_v2.png?raw=true)
 ![128x128 Grid ](https://github.com/FranGarc/GridMethod/blob/main/screenshots/grid_method_v2_square_128.png?raw=true)
-![Diamond 128x128 ](https://github.com/FranGarc/GridMethod/blob/main/screenshots/grid_method_v2_diamond_128.png.png?raw=true)
+![Diamond 128x128 ](https://github.com/FranGarc/GridMethod/blob/main/screenshots/grid_method_v2_diamond_128.png?raw=true)
 
