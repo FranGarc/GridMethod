@@ -11,34 +11,97 @@
             flex-direction: column;
             align-items: center;
             margin: 20px;
+            font-size: 40px;
         }
         canvas {
             border: 1px solid black;
             margin-top: 20px;
+
         }
-        input, button {
-            margin: 10px;
+        input {
+            height: 60px;
+        }
+        span{
+                    padding: 20px 20px 0px;
+            align-items: center;
+
+        }
+        div{
+            width: 60%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px 20px 0px;
+            box-sizing: border-box; /* Ensures padding is included in the element's total width */
+
+        }
+        .styled {
+              border: 0;
+              line-height: 2.5;
+              padding: 0 20px;
+              font-size: 1.5rem;
+              text-align: center;
+              color: #fff;
+              text-shadow: 1px 1px 1px #000;
+              border-radius: 10px;
+              background-color: rgb(15 76 15 / 100%);
+              background-image: linear-gradient(
+                to top left,
+                rgb(0 0 0 / 20%),
+                rgb(0 0 0 / 20%) 30%,
+                rgb(0 0 0 / 0%)
+              );
+              box-shadow:
+                inset 2px 2px 3px rgb(255 255 255 / 60%),
+                inset -2px -2px 3px rgb(0 0 0 / 60%);
+            }
+
+        .styled:hover {
+          background-color: rgb(38 179 38 / 100%);
+        }
+
+        .styled:active {
+          box-shadow:
+            inset -2px -2px 3px rgb(255 255 255 / 60%),
+            inset 2px 2px 3px rgb(0 0 0 / 60%);
         }
     </style>
 </head>
 <body>
-    <h1>Image Diagonal Line Drawer</h1>
-    <input type="file" id="upload" accept="image/*">
-    <input type="color" id="lineColor" value="#ff0000">
-    
-    <div>
-        <button id="drawCross">Draw Cross</button>
-        <button id="drawDiagonal">Draw Diagonal</button>
-        <button id="drawDiamond1">Draw Diamond 1</button>
-        <button id="drawDiamond2">Draw Diamond 2</button>
-        <button id="drawDiamond3">Draw Diamond 3</button>
-        <button id="drawDiamond4">Draw Diamond 4</button>
-    </div>
-    <button id="clearLines">Clear Lines</button>
-    </div>
-    <a id="downloadLink" download="modified-image.png" style="display:none;">Download Image</a>
-    <canvas id="canvas" style="display:none;"></canvas>
+<h1>Image Diagonal Line Drawer</h1>
+<div><input class="styled" type="file" id="upload" accept="image/*"></div>
+<span>
+    <label for="lineColor">Line Color</label>
+    <input class="" type="color" id="lineColor" value="#ff0000"></span>
 
-    <script src="script.js"></script>
+<div>
+    <button class="styled" id="drawDiagonal">Draw Diagonal</button>
+    <button class="styled" id="drawDiamond1">Diamond</button>
+    <button class="styled" id="drawDiamond2">Diamond 4x4</button>
+    <button class="styled" id="drawDiamond3">Diamond 8x8</button>
+    <button class="styled" id="drawDiamond4">Diamond 16x16</button>
+    <button class="styled" id="drawDiamond5">Diamond 32x32</button>
+    <button class="styled" id="drawDiamond6">Diamond 64x64</button>
+    <button class="styled" id="drawDiamond7">Diamond 128x128</button>
+</div>
+
+<div>
+    <button class="styled" id="drawCross">Cross</button>
+    <button class="styled" id="drawGrid3">4x4 Grid</button>
+    <button class="styled" id="drawGrid7">8x8 Grid</button>
+    <button class="styled" id="drawGrid15">16x16 Grid</button>
+    <button class="styled" id="drawGrid31">32x32 Grid</button>
+    <button class="styled" id="drawGrid63">64x64 Grid</button>
+    <button class="styled" id="drawGrid127">128x128 Grid</button>
+
+</div>
+
+<div>
+    <button class="styled" id="clearLines">Clear Lines</button>
+</div>
+<a class="styled" id="downloadLink" download="modified-image.png" style="display:none;">Download Image</a>
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script src="script.js"></script>
 </body>
 </html>

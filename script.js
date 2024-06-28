@@ -5,6 +5,16 @@ document.getElementById('drawDiamond1').addEventListener('click', drawDiamond1);
 document.getElementById('drawDiamond2').addEventListener('click', drawDiamond2);
 document.getElementById('drawDiamond3').addEventListener('click', drawDiamond3);
 document.getElementById('drawDiamond4').addEventListener('click', drawDiamond4);
+document.getElementById('drawDiamond5').addEventListener('click', drawDiamond5);
+document.getElementById('drawDiamond6').addEventListener('click', drawDiamond6);
+document.getElementById('drawDiamond7').addEventListener('click', drawDiamond7);
+
+document.getElementById('drawGrid3').addEventListener('click', drawGrid3);
+document.getElementById('drawGrid7').addEventListener('click', drawGrid7);
+document.getElementById('drawGrid15').addEventListener('click', drawGrid15);
+document.getElementById('drawGrid31').addEventListener('click', drawGrid31);
+document.getElementById('drawGrid63').addEventListener('click', drawGrid63);
+document.getElementById('drawGrid127').addEventListener('click', drawGrid127);
 
 
 
@@ -12,6 +22,7 @@ document.getElementById('clearLines').addEventListener('click',clearLines);
 let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
 let img = new Image();
+let lineWidth = 1;
 
 
 
@@ -44,29 +55,52 @@ function clearLines(){
 
 function drawCross(){
     checkUserUploadedImage()
-    let lineColor = document.getElementById('lineColor').value;
-
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 5;
-
-    let width = canvas.width
-    let height = canvas.height
-    ctx.beginPath();
- 
-    ctx.moveTo(canvas.width / 2, 0);
-    ctx.lineTo(canvas.width / 2, canvas.height);
-    ctx.moveTo(0, canvas.height / 2);
-    ctx.lineTo(canvas.width, canvas.height / 2);
-
-
-    ctx.stroke();
+    grid(2);
     showDownloadLink();
 }
+
+function drawGrid3(){
+    checkUserUploadedImage()
+    grid(4);
+    showDownloadLink();
+}
+
+function drawGrid7(){
+    checkUserUploadedImage()
+    grid(8);
+    showDownloadLink();
+}
+
+
+
+function drawGrid15(){
+    checkUserUploadedImage()
+    grid(16);
+    showDownloadLink();
+}
+
+function drawGrid31(){
+    checkUserUploadedImage()
+    grid(32);
+    showDownloadLink();
+}
+
+function drawGrid63(){
+    checkUserUploadedImage()
+    grid(64);
+    showDownloadLink();
+}
+function drawGrid127(){
+    checkUserUploadedImage()
+    grid(128);
+    showDownloadLink();
+}
+
 function drawDiagonals() {
     checkUserUploadedImage();
     let lineColor = document.getElementById('lineColor').value;
     ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 5;
+    ctx.lineWidth = lineWidth;
 
     let width = canvas.width
     let height = canvas.height
@@ -82,316 +116,159 @@ function drawDiagonals() {
 }
 function drawDiamond1() {
     checkUserUploadedImage();
-
-    drawCross();
     drawDiagonals();
-
-    let lineColor = document.getElementById('lineColor').value;
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 5;
-
-    let width = canvas.width
-    let halfwidth = width / 2
-    let height = canvas.height
-    let halfheight = height / 2
-    ctx.beginPath();
-
-    ctx.moveTo(halfwidth, 0);
-    ctx.lineTo(width, halfheight);
-    ctx.moveTo(halfwidth, 0);
-    ctx.lineTo(0, halfheight);
-    
-    ctx.moveTo(halfwidth, height);
-    ctx.lineTo(width, halfheight);
-    ctx.moveTo(halfwidth, height);
-    ctx.lineTo(0, halfheight);
-
-
-
-    ctx.stroke();
+    diamond(2);
     showDownloadLink();
 
 }
 
 function drawDiamond2() {
-    drawDiamond1();
-    let lineColor = document.getElementById('lineColor').value;
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 5;
-
-    let width = canvas.width
-    let height = canvas.height
-    let quarterWidth = canvas.width / 4
-    let threeQuarterWidth = 3 * quarterWidth
-    let quarterHeight = canvas.height / 4
-    let threeQuarterHeight = 3 * quarterHeight
-    ctx.beginPath();
-
-    // vertical quarter
-    ctx.moveTo(quarterWidth, 0);
-    ctx.lineTo(quarterWidth, height);
-    ctx.moveTo(threeQuarterWidth, 0);
-    ctx.lineTo(threeQuarterWidth, height);
-
-
-    // horizontal quarter
-    ctx.moveTo(0, quarterHeight);
-    ctx.lineTo(width, quarterHeight);
-    ctx.moveTo(0, threeQuarterHeight);
-    ctx.lineTo(width, threeQuarterHeight);
-    ctx.moveTo(quarterWidth, 0);
-    ctx.lineTo(width, threeQuarterHeight);
-
-    ctx.moveTo(0, quarterHeight);
-    ctx.lineTo(threeQuarterWidth, height);
-
-    ctx.moveTo(quarterWidth, 0);
-    ctx.lineTo(0, quarterHeight);
-
-    ctx.moveTo(threeQuarterWidth, height);
-    ctx.lineTo(width, threeQuarterHeight);
-
-    ctx.moveTo(0, threeQuarterHeight);
-    ctx.lineTo(threeQuarterWidth, 0);
-
-    ctx.moveTo(threeQuarterWidth, 0);
-    ctx.lineTo(width, quarterHeight);
-
-    ctx.moveTo(width, quarterHeight);
-    ctx.lineTo(quarterWidth, height);
-
-    ctx.moveTo(quarterWidth, height);
-    ctx.lineTo(0, threeQuarterHeight);
-
-
-    ctx.stroke();
+    checkUserUploadedImage();
+    drawDiagonals();
+    diamond(4);
     // Show download link
     showDownloadLink();
 }
 
 function drawDiamond3() {
-    drawDiamond2();
-    
-    let lineColor = document.getElementById('lineColor').value;
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 5;
-
-    // Draw diagonal lines
-    let width = canvas.width
-    let height = canvas.height
-    let eighthWidth = canvas.width / 8
-    let twoEighthWidth = 2 * eighthWidth
-    let threeEighthWidth = 3 * eighthWidth
-    let fiveEighthWidth = 5 * eighthWidth
-    let sixEighthWidth = 6 * eighthWidth
-    let sevenEighthWidth = 7 * eighthWidth
-    let eighthHeight = canvas.height / 8
-    let twoEighthHeight = 2 * eighthHeight
-    let threeEighthHeight = 3 * eighthHeight
-    let fiveEighthHeight = 5 * eighthHeight
-    let sixEighthHeight = 6 * eighthHeight
-    let sevenEighthHeight = 7 * eighthHeight
-    ctx.beginPath();
-
-    // vertical eighth
-    ctx.moveTo(eighthWidth, 0);
-    ctx.lineTo(eighthWidth, height);
-
-    ctx.moveTo(threeEighthWidth, 0);
-    ctx.lineTo(threeEighthWidth, height);
-
-    ctx.moveTo(fiveEighthWidth, 0);
-    ctx.lineTo(fiveEighthWidth, height);
-
-    ctx.moveTo(sevenEighthWidth, 0);
-    ctx.lineTo(sevenEighthWidth, height);
-
-
-
-
-
-    ctx.moveTo(0, eighthHeight);
-    ctx.lineTo(width, eighthHeight);
-    ctx.moveTo(0, twoEighthHeight);
-    ctx.lineTo(width, twoEighthHeight);
-    ctx.moveTo(0, threeEighthHeight);
-    ctx.lineTo(width, threeEighthHeight);
-    ctx.moveTo(0, fiveEighthHeight);
-    ctx.lineTo(width, fiveEighthHeight);
-    ctx.moveTo(0, sixEighthHeight);
-    ctx.lineTo(width, sixEighthHeight);
-    ctx.moveTo(0, sevenEighthHeight);    
-    ctx.lineTo(width, sevenEighthHeight);
-
-
-
-   // diamond eighth
-    ctx.moveTo(0, eighthHeight);
-    ctx.lineTo(eighthWidth, 0); 
-
-    ctx.moveTo(0, twoEighthHeight);
-    ctx.lineTo(twoEighthWidth, 0); 
-
-    ctx.moveTo(0, threeEighthHeight);
-    ctx.lineTo(threeEighthWidth, 0); 
-
-
-    ctx.moveTo(sevenEighthWidth, 0);
-    ctx.lineTo(width, eighthHeight); 
-
-    ctx.moveTo(sixEighthWidth, 0);
-    ctx.lineTo(width, twoEighthHeight); 
-
-    ctx.moveTo(fiveEighthWidth, 0);
-    ctx.lineTo(width, threeEighthHeight); 
-
-
-
-    ctx.moveTo(0, fiveEighthHeight);
-    ctx.lineTo(threeEighthWidth, height); 
-
-    ctx.moveTo(0, sixEighthHeight);
-    ctx.lineTo(twoEighthWidth, height); 
-
-
-    ctx.moveTo(0, sevenEighthHeight);
-    ctx.lineTo(eighthWidth, height); 
-
-    ctx.moveTo(threeEighthWidth, height);
-    ctx.lineTo(width, threeEighthHeight);
-
-    ctx.moveTo(fiveEighthWidth, height);
-    ctx.lineTo(width, fiveEighthHeight); 
-
-    ctx.moveTo(sixEighthWidth, height);
-    ctx.lineTo(width, sixEighthHeight); 
-
-
-    ctx.moveTo(sevenEighthWidth, height);
-    ctx.lineTo(width, sevenEighthHeight); 
-
-
-    ctx.moveTo(eighthWidth, 0);
-    ctx.lineTo(width, sevenEighthHeight); 
-
-    ctx.moveTo(threeEighthWidth, 0);
-    ctx.lineTo(width, fiveEighthHeight); 
-
-    ctx.moveTo(0, eighthHeight);
-    ctx.lineTo(sevenEighthWidth, height); 
-
-    ctx.moveTo(0, threeEighthHeight);
-    ctx.lineTo(fiveEighthWidth, height); 
-
-
-    ctx.moveTo(fiveEighthWidth, 0);
-    ctx.lineTo(0, fiveEighthHeight); 
-
-    ctx.moveTo(sevenEighthWidth, 0);
-    ctx.lineTo(0, sevenEighthHeight); 
-
-    ctx.moveTo(width, eighthHeight);
-    ctx.lineTo(eighthWidth, height); 
-
-    ctx.moveTo(width, eighthHeight);
-    ctx.lineTo(eighthWidth, height); 
-
-
-    ctx.stroke();
+    checkUserUploadedImage();
+    drawDiagonals();
+    diamond(8);
     // Show download link
     showDownloadLink();
 }
-
-
 
 function drawDiamond4() {
-    drawDiamond3();
-    
-    let lineColor = document.getElementById('lineColor').value;
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 5;
-
-    // Draw diagonal lines
-    let width = canvas.width
-    let height = canvas.height
-    let one16thWidth = canvas.width / 16
-    let three16thWidth = 3 * one16thWidth
-    let four16thWidth = 4 * one16thWidth
-    let five16thWidth = 5 * one16thWidth
-    let six16thWidth = 6 * one16thWidth
-    let seven16thWidth = 7 * one16thWidth
-    let nine16thWidth = 9 * one16thWidth
-    let ten16thWidth = 10 * one16thWidth
-    let eleven16thWidth = 11 * one16thWidth
-    let twelve16thWidth = 12 * one16thWidth
-    let thirteen16thWidth = 13 * one16thWidth
-    let fourteen16thWidth = 14 * one16thWidth
-    let fifteen16thWidth = 15 * one16thWidth
-   
-   
-    let one16thHeight = canvas.height / 16
-    let three16thHeight = 3 * one16thHeight
-    let five16thHeight = 5 * one16thHeight
-    let seven16thHeight = 7 * one16thHeight
-    let nine16thHeight = 9 * one16thHeight
-    let eleven16thHeight = 11 * one16thHeight
-    let thirteen16thHeight = 13 * one16thHeight
-    let fifteen16thHeight = 15 * one16thHeight
-
-    ctx.beginPath();
-
-    //vertical
-    ctx.moveTo(one16thWidth, 0)
-    ctx.lineTo(one16thWidth, height)
-    ctx.moveTo(three16thWidth, 0)
-    ctx.lineTo(three16thWidth, height)
-    ctx.moveTo(four16thWidth, 0)
-    ctx.lineTo(four16thWidth, height)
-    ctx.moveTo(five16thWidth, 0)
-    ctx.lineTo(five16thWidth, height)
-    ctx.moveTo(six16thWidth, 0)
-    ctx.lineTo(six16thWidth, height)
-    ctx.moveTo(seven16thWidth, 0)
-    ctx.lineTo(seven16thWidth, height)
-    ctx.moveTo(nine16thWidth, 0)
-    ctx.lineTo(nine16thWidth, height)
-    ctx.moveTo(ten16thWidth, 0)
-    ctx.lineTo(ten16thWidth, height)
-    ctx.moveTo(eleven16thWidth, 0)
-    ctx.lineTo(eleven16thWidth, height)
-    ctx.moveTo(twelve16thWidth, 0)
-    ctx.lineTo(twelve16thWidth, height)
-    ctx.moveTo(thirteen16thWidth, 0)
-    ctx.lineTo(thirteen16thWidth, height)
-    ctx.moveTo(fourteen16thWidth, 0)
-    ctx.lineTo(fourteen16thWidth, height)
-    ctx.moveTo(fifteen16thWidth, 0)
-    ctx.lineTo(fifteen16thWidth, height)
-
-    //vertical
-    ctx.moveTo(0, one16thHeight)
-    ctx.lineTo(width, one16thHeight)
-    ctx.moveTo(0, three16thHeight)
-    ctx.lineTo(width, three16thHeight)
-    ctx.moveTo(0, five16thHeight)
-    ctx.lineTo(width, five16thHeight)
-    ctx.moveTo(0, seven16thHeight)
-    ctx.lineTo(width, seven16thHeight)
-    ctx.moveTo(0, nine16thHeight)
-    ctx.lineTo(width, nine16thHeight)
-    ctx.moveTo(0, eleven16thHeight)
-    ctx.lineTo(width, eleven16thHeight)
-    ctx.moveTo(0, thirteen16thHeight)
-    ctx.lineTo(width, thirteen16thHeight)
-    ctx.moveTo(0, fifteen16thHeight)
-    ctx.lineTo(width, fifteen16thHeight)
-
-
-    ctx.stroke();
+    checkUserUploadedImage();
+    drawDiagonals();
+    diamond(16);
     // Show download link
     showDownloadLink();
 }
 
+function drawDiamond5() {
+    checkUserUploadedImage();
+    drawDiagonals();
+    diamond(32);
+    // Show download link
+    showDownloadLink();
+}
+
+function drawDiamond6() {
+    checkUserUploadedImage();
+    drawDiagonals();
+    diamond(64);
+    // Show download link
+    showDownloadLink();
+}
+
+function drawDiamond7() {
+    checkUserUploadedImage();
+    drawDiagonals();
+    diamond(128);
+    // Show download link
+    showDownloadLink();
+}
+
+function testQuarters(){
+    drawDiagonals();
+    diamond(16);
+}
+function diamond(parameter){
+    console.log("diamond parameter: " + parameter);
+
+    let width = canvas.width;
+    let height = canvas.height;
+
+    let topPoints = createTopPoints(parameter, width);
+    let leftPoints = createLeftPoints(parameter, height);
+    let bottomPoints = topPoints.reverse();
+    let rightPoints = leftPoints.reverse();
+
+    let lineColor = document.getElementById('lineColor').value;
+
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = lineWidth;
+    ctx.beginPath();
+
+    let length = topPoints.length;
+    console.log("length: " + length);
+    for (let index = 0; index < topPoints.length; ++index) {
+
+            let topPoint = topPoints[index];
+            let bottomPoint = topPoints[length - index -1];
+            let leftPoint = leftPoints[index];
+            let rightPoint = leftPoints[length - index - 1];
+
+
+            ctx.moveTo(topPoint, 0);
+            ctx.lineTo(0, leftPoint);
+            ctx.moveTo(topPoint, 0);
+            ctx.lineTo(width, rightPoint);
+
+
+            ctx.moveTo(bottomPoint, height);
+            ctx.lineTo(0, leftPoint);
+            ctx.moveTo(bottomPoint, height);
+            ctx.lineTo(width, rightPoint);
+        }
+
+    ctx.stroke();
+    grid(parameter);
+}
+
+function grid(parameter){
+    console.log("grid parameter: " + parameter);
+
+    // Draw diagonal lines
+    let width = canvas.width;
+    let height = canvas.height;
+    let topPoints = createTopPoints(parameter, width);
+    let leftPoints = createLeftPoints(parameter, height);
+    let lineColor = document.getElementById('lineColor').value;
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = lineWidth;
+    ctx.beginPath();
+
+    for (let index = 0; index < topPoints.length; ++index) {
+        let startPoint = topPoints[index];
+        console.log("startPoint: " + startPoint);
+
+        ctx.moveTo(startPoint, 0);
+        ctx.lineTo(startPoint, height);
+    }
+
+    for (let index = 0; index < leftPoints.length; ++index) {
+        let startPoint = leftPoints[index];
+        console.log("startPoint: " + startPoint);
+
+        ctx.moveTo(0, startPoint);
+        ctx.lineTo(width, startPoint);
+    }
+    ctx.stroke();
+
+}
+
+
+function generateFractions(parameter, dimension) {
+    let fractions = [];
+        console.log("generateFractions parameter: " + parameter + " dimension: "+ dimension);
+
+    for (let i = 1; i < parameter; i++) {
+        fractions.push(i* (dimension/parameter) );
+    }
+    return fractions;
+}
+
+function createTopPoints(divideBy, width){
+    let points = generateFractions(divideBy, width)
+    return points
+}
+
+function createLeftPoints(divideBy, height){
+    let points = generateFractions(divideBy, height)
+    return points
+}
 
 function showDownloadLink(){
     let downloadLink = document.getElementById('downloadLink');
