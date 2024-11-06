@@ -19,6 +19,16 @@
             
 
         }
+        input{
+            font-size:48px;
+            height: 48px;
+            width: 128px;
+        }
+        input[type=number]{
+            font-size:48px;
+            height: 72px;
+            width: 720px;
+        }
         input.image {
             height: 160px;
             width: 160px;
@@ -39,7 +49,7 @@
             background-color: rgb(175, 22, 22);
         }
         span{
-                    padding: 20px 20px 0px;
+            padding: 20px 20px 0px;
             align-items: center;
 
         }
@@ -118,36 +128,36 @@
     <input class="upload" type="file" id="upload" accept="image/*">
 </div>-->
 
-  <label class="label">
+<label class="label">
     <input type="file" id="upload" required/>
     <span>Select a file</span>
-  </label>
-  
+</label>
+
 <span>
     <label for="lineColor">Line Color</label>
     <input class="" type="color" id="lineColor" value="#ff0000"></span>
 
 <div>
 
-    <input type="image" class="image" src="img/diagonals.png" id="drawDiagonal" />
-    <input type="image" class="image" src="img/diamond.png" id="drawDiamond1" />
-    <input type="image" class="image" src="img/diamond4.png " id="drawDiamond2" />
-    <input type="image" class="image" src="img/diamond8.png " id="drawDiamond3" />
-    <input type="image" class="image" src="img/diamond16.png " id="drawDiamond4" />
-    <input type="image" class="image" src="img/diamond32.png " id="drawDiamond5" />
-    <input type="image" class="image" src="img/diamond64.png " id="drawDiamond6" />
-    <input type="image" class="image" src="img/diamond128.png " id="drawDiamond7" />
-    
+    <input type="image" class="image" src="img/diagonals.png" id="drawDiagonal"/>
+    <input type="image" class="image" src="img/diamond.png" id="drawDiamond1"/>
+    <input type="image" class="image" src="img/diamond4.png " id="drawDiamond2"/>
+    <input type="image" class="image" src="img/diamond8.png " id="drawDiamond3"/>
+    <input type="image" class="image" src="img/diamond16.png " id="drawDiamond4"/>
+    <input type="image" class="image" src="img/diamond32.png " id="drawDiamond5"/>
+    <input type="image" class="image" src="img/diamond64.png " id="drawDiamond6"/>
+    <input type="image" class="image" src="img/diamond128.png " id="drawDiamond7"/>
+
 </div>
 
 <div>
-    <input type="image" class="image" src="img/cross.png" id="drawCross" />
-    <input type="image" class="image" src="img/grid4.png" id="drawGrid3" />
-    <input type="image" class="image" src="img/grid8.png " id="drawGrid7" />
-    <input type="image" class="image" src="img/grid16.png " id="drawGrid15" />
-    <input type="image" class="image" src="img/grid32.png " id="drawGrid31" />
-    <input type="image" class="image" src="img/grid64.png " id="drawGrid63" />
-    <input type="image" class="image" src="img/grid128.png " id="drawGrid127" />
+    <input type="image" class="image" src="img/cross.png" id="drawCross"/>
+    <input type="image" class="image" src="img/grid4.png" id="drawGrid3"/>
+    <input type="image" class="image" src="img/grid8.png " id="drawGrid7"/>
+    <input type="image" class="image" src="img/grid16.png " id="drawGrid15"/>
+    <input type="image" class="image" src="img/grid32.png " id="drawGrid31"/>
+    <input type="image" class="image" src="img/grid64.png " id="drawGrid63"/>
+    <input type="image" class="image" src="img/grid128.png " id="drawGrid127"/>
 
 
 </div>
@@ -155,9 +165,13 @@
 <div>
     <button class="styled" id="clearLines">Clear Lines</button>
 </div>
+<input type="number" id="gridSpacing" placeholder="Grid spacing (cm)" min="1">
+<button class="styled" onclick="applyGrid()">Apply Grid</button>
+
+<div id="imageDimensions"></div>
 <a class="styled" id="downloadLink" download="modified-image.png" style="display:none;">Download Image</a>
 <canvas id="canvas" style="display:none;"></canvas>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

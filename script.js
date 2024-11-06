@@ -16,6 +16,7 @@ document.getElementById('drawGrid31').addEventListener('click', drawGrid31);
 document.getElementById('drawGrid63').addEventListener('click', drawGrid63);
 document.getElementById('drawGrid127').addEventListener('click', drawGrid127);
 
+//document.getElementById('gridSpacing').addEventListener('click', applyGrid);
 
 
 document.getElementById('clearLines').addEventListener('click',clearLines);
@@ -23,7 +24,11 @@ let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
 let img = new Image();
 let lineWidth = 1;
-
+let widthPx = 0;
+let heightPx = 0;
+let widthCm = 0;
+let heightCm = 0;
+const InchToCm = 2.54;
 
 
 function handleImageUpload(event) {
@@ -34,11 +39,93 @@ function handleImageUpload(event) {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             canvas.style.display = 'block';
+
+            // Read EXIF metadata to get DPI
+            EXIF.getData(img, function() {
+                let xDpi = EXIF.getTag(this, 'XResolution') || 96; // Use 96 if not found
+                let yDpi = EXIF.getTag(this, 'YResolution') || 96; // Use 96 if not found
+                let dpi = (xDpi + yDpi) / 2; // Average DPI for horizontal and vertical
+                canvas.dpi = dpi;
+                // Call function to display dimensions with actual DPI
+                getImageDimensions(img, dpi);
+            });
+
         }
         img.src = e.target.result;
     }
     reader.readAsDataURL(event.target.files[0]);
 }
+
+// Updated function to calculate and display dimensions using the DPI from EXIF
+function getImageDimensions(img, dpi) {
+    widthPx = img.width;
+    heightPx = img.height;
+
+    // Convert pixels to centimeters using the DPI value
+    const widthCm = (widthPx / dpi) * InchToCm;
+    const heightCm = (heightPx / dpi) * InchToCm;
+
+
+
+    const dimensionsText = `
+            Image dimensions:
+            ${widthPx}px x ${heightPx}px<br>
+            Approximate size in cm: ${widthCm.toFixed(2)}cm x ${heightCm.toFixed(2)}cm (DPI: ${dpi})
+        `;
+
+        // Display the dimensions in the HTML div
+        document.getElementById('imageDimensions').innerHTML = dimensionsText;
+
+    console.log(`Image dpi: ${dpi}PPI`);
+    console.log(`Image dimensions in pixels: ${widthPx}px x ${heightPx}px`);
+    console.log(`Image dimensions in centimeters: ${widthCm.toFixed(2)}cm x ${heightCm.toFixed(2)}cm (DPI: ${dpi})`);
+}
+
+function applyGrid() {
+    console.log(`applyGrid triggered ${canvas.dpi} is canvas.dpi`);
+
+    const spacingCm = parseInt(document.getElementById('gridSpacing').value, 10);
+
+    if (isNaN(spacingCm) || spacingCm <= 0) {
+        alert("Please enter a valid number for grid spacing in cm.");
+        return;
+    }
+
+    // Ensure canvas DPI is available before calling the grid function
+    if (canvas.dpi) {
+        drawGridOverlay(canvas.dpi, spacingCm);
+    } else {
+        alert("Please upload an image first to determine DPI.");
+    }
+}
+function drawGridOverlay(dpi, nCmSpacing) {
+    console.log(`drawGridOverlay triggered with ${nCmSpacing}cm spacing for ${dpi}PPI dpi `);
+
+    const spacingPx = (nCmSpacing / InchToCm) * dpi; // Convert cm to pixels
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Draw grid
+    ctx.beginPath();
+    let lineColor = document.getElementById('lineColor').value;
+
+    ctx.strokeStyle = lineColor; // Semi-transparent black for the grid lines
+    // Draw vertical lines
+    for (let x = spacingPx; x < width; x += spacingPx) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+    }
+
+    // Draw horizontal lines
+    for (let y = spacingPx; y < height; y += spacingPx) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+    }
+
+    ctx.stroke(); // Draw all the lines
+    ctx.closePath();
+}
+
 function checkUserUploadedImage(){
     if (!img.src) {
         alert("Please upload an image first.");
@@ -50,7 +137,7 @@ function clearLines(){
     ctx.drawImage(img, 0, 0); // Redraw the original image
     let downloadLink = document.getElementById('downloadLink');
     downloadLink.href = canvas.toDataURL('image/png');
-    downloadLink.style.display = 'none'; // remove download link
+    downloadLink.style.display = 'block'; // remove download link
 }
 
 function drawCross(){
