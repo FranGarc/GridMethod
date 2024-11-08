@@ -5,25 +5,20 @@ document.getElementById('drawDiamond1').addEventListener('click', drawDiamond1);
 document.getElementById('drawDiamond2').addEventListener('click', drawDiamond2);
 document.getElementById('drawDiamond3').addEventListener('click', drawDiamond3);
 document.getElementById('drawDiamond4').addEventListener('click', drawDiamond4);
-document.getElementById('drawDiamond5').addEventListener('click', drawDiamond5);
-document.getElementById('drawDiamond6').addEventListener('click', drawDiamond6);
-document.getElementById('drawDiamond7').addEventListener('click', drawDiamond7);
+
 
 document.getElementById('drawGrid3').addEventListener('click', drawGrid3);
 document.getElementById('drawGrid7').addEventListener('click', drawGrid7);
 document.getElementById('drawGrid15').addEventListener('click', drawGrid15);
 document.getElementById('drawGrid31').addEventListener('click', drawGrid31);
-document.getElementById('drawGrid63').addEventListener('click', drawGrid63);
-document.getElementById('drawGrid127').addEventListener('click', drawGrid127);
 
-//document.getElementById('gridSpacing').addEventListener('click', applyGrid);
 
 
 document.getElementById('clearLines').addEventListener('click',clearLines);
 let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
 let img = new Image();
-let lineWidth = 1;
+let lineWidth = 2;
 let widthPx = 0;
 let heightPx = 0;
 let widthCm = 0;
@@ -108,7 +103,7 @@ function drawGridOverlay(dpi, nCmSpacing) {
     // Draw grid
     ctx.beginPath();
     let lineColor = document.getElementById('lineColor').value;
-
+    ctx.lineWidth = lineWidth;
     ctx.strokeStyle = lineColor; // Semi-transparent black for the grid lines
     // Draw vertical lines
     for (let x = spacingPx; x < width; x += spacingPx) {
@@ -172,17 +167,6 @@ function drawGrid31(){
     showDownloadLink();
 }
 
-function drawGrid63(){
-    checkUserUploadedImage()
-    grid(64);
-    showDownloadLink();
-}
-function drawGrid127(){
-    checkUserUploadedImage()
-    grid(128);
-    showDownloadLink();
-}
-
 function drawDiagonals() {
     checkUserUploadedImage();
     let lineColor = document.getElementById('lineColor').value;
@@ -229,30 +213,6 @@ function drawDiamond4() {
     checkUserUploadedImage();
     drawDiagonals();
     diamond(16);
-    // Show download link
-    showDownloadLink();
-}
-
-function drawDiamond5() {
-    checkUserUploadedImage();
-    drawDiagonals();
-    diamond(32);
-    // Show download link
-    showDownloadLink();
-}
-
-function drawDiamond6() {
-    checkUserUploadedImage();
-    drawDiagonals();
-    diamond(64);
-    // Show download link
-    showDownloadLink();
-}
-
-function drawDiamond7() {
-    checkUserUploadedImage();
-    drawDiagonals();
-    diamond(128);
     // Show download link
     showDownloadLink();
 }
