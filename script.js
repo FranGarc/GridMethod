@@ -119,6 +119,7 @@ function drawGridOverlay(dpi, nCmSpacing) {
 
     ctx.stroke(); // Draw all the lines
     ctx.closePath();
+    showDownloadLink();
 }
 
 function checkUserUploadedImage(){
