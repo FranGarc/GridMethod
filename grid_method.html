@@ -2,198 +2,300 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Diagonal Line Drawer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>GridMethod - Reference Line Drawer</title>
+    <!-- I'll add all the new CSS directly in the <style> tag for simplicity -->
     <style>
+        /* --- General Body & Layout --- */
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 20px;
-            font-size: 40px;
         }
-        canvas {
-            border: 1px solid black;
-            margin-top: 20px;
-            
 
+        h1 {
+            color: #1c1e21;
         }
-        input{
-            font-size:48px;
-            height: 48px;
-            width: 128px;
+
+        .main-container {
+            display: flex;
+            flex-wrap: wrap; /* Allows wrapping on smaller screens */
+            gap: 24px;
+            width: 100%;
+            max-width: 1600px;
+            justify-content: center;
         }
-        input[type=number]{
-            font-size:48px;
-            height: 72px;
-            width: 720px;
+
+        .controls-column {
+            flex: 1;
+            min-width: 400px;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
-        input.image {
-            height: 160px;
-            width: 160px;
-            padding: 3px;
-            margin-left: 10px;
-            margin-right: 10px;
-            border-radius: 10px;
-            background-color: rgb(175, 22, 22);
-            background-image: linear-gradient(
-                to top left,
-                rgb(0 0 0 / 20%),
-                rgb(0 0 0 / 20%) 30%,
-                rgb(0 0 0 / 0%)
-              );
-        }
-        input.upload{
-            height: 60px;
-            background-color: rgb(175, 22, 22);
-        }
-        span{
-            padding: 20px 20px 0px;
+
+        .canvas-column {
+            flex: 3;
+            min-width: 60%;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-
         }
-        div{
-            width: 60%;
+
+        canvas {
+            border: 1px solid #ccc;
+            max-width: 100%; /* Makes canvas responsive */
+            height: auto;   /* Maintain aspect ratio */
+            background-color: white;
+        }
+
+        #imageDimensions {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* --- UI Card Styling --- */
+        .control-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-card h2 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            font-size: 1.4rem;
+            border-bottom: 2px solid #f0f2f5;
+            padding-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+
+        /* --- Button & Input Styling --- */
+        .button, select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        select {
+             background-color: #fff;
+             color: #333;
+             -webkit-appearance: none;
+             appearance: none;
+             background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+             background-repeat: no-repeat;
+             background-position: right .7em top 50%;
+             background-size: .65em auto;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        #upload-label { /* Special styling for the file upload button */
+            background-color: #28a745;
+        }
+        #upload-label:hover {
+            background-color: #218838;
+        }
+
+        input[type="file"] {
+            display: none; /* Hide the default file input */
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 40px;
+            padding: 0;
+            border: 1px solid #ccc;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .grid-button-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .grid-button {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            height: auto;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        .grid-button:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+        }
+
+        /* --- Orientation Radio Buttons --- */
+        .orientation-group {
             display: flex;
             justify-content: space-around;
-            align-items: center;
-            padding: 20px 20px 0px;
-            box-sizing: border-box; /* Ensures padding is included in the element's total width */
-
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+            /* This ensures the button group stays below the label */
+            width: 100%;
+            margin-top: 5px;
         }
-        .styled {
-              border: 0;
-              line-height: 2.5;
-              padding: 0 20px;
-              font-size: 1.5rem;
-              text-align: center;
-              color: #fff;
-              text-shadow: 1px 1px 1px #000;
-              border-radius: 10px;
-              background-color: rgb(15 76 15 / 100%);
-              background-image: linear-gradient(
-                to top left,
-                rgb(0 0 0 / 20%),
-                rgb(0 0 0 / 20%) 30%,
-                rgb(0 0 0 / 0%)
-              );
-              box-shadow:
-                inset 2px 2px 3px rgb(255 255 255 / 60%),
-                inset -2px -2px 3px rgb(0 0 0 / 60%);
-            }
-
-        .styled:hover {
-          background-color: rgb(38 179 38 / 100%);
+        .orientation-group label {
+            flex: 1;
+            text-align: center;
+            /* Changed from 10px 0 to 10px 15px to give letters room */
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            transition: background-color 0.2s;
+            margin: 0;
+            /* Prevents text from touching edges on small widths */
+            white-space: nowrap;
+        }
+        .orientation-group input[type="radio"] {
+            display: none; /* Hide the actual radio button */
+        }
+        .orientation-group input[type="radio"]:checked + label {
+            background-color: #007bff;
+            color: white;
         }
 
-        .styled:active {
-          box-shadow:
-            inset -2px -2px 3px rgb(255 255 255 / 60%),
-            inset 2px 2px 3px rgb(0 0 0 / 60%);
+        /* --- Button Padding & Size Boost --- */
+        .button, select, input[type="number"] {
+            padding: 14px; /* Chunkier, easier to click */
+            font-size: 1.05rem;
         }
-
-
-        label.label input[type="file"] {
-        position: absolute;
-        top: -1000px;
-      }
-      .label {
-        cursor: pointer;
-        border: 1px solid #cccccc;
-        border-radius: 5px;
-        padding: 5px 15px;
-        margin: 5px;
-        background:rgb(182, 82, 82);
-        display: inline-block;
-      }
-      .label:hover {
-        background:rgb(113, 3, 3);
-      }
-      .label:active {
-        background:rgb(182, 82, 82);
-      }
-      .label:invalid + span {
-        color: #000000;
-      }
-      .label:valid + span {
-        color: #ffffff;
-      }
 
     </style>
 </head>
 <body>
-<h1>Reference Lines Drawer</h1>
-<!--<div>
-    <input class="upload" type="file" id="upload" accept="image/*">
-</div>-->
 
-<label class="label">
-    <input type="file" id="upload" required/>
-    <span>Select a file</span>
-</label>
+<h1>Reference Line Drawer</h1>
 
-<div>
-    <label for="outputFormat">Output Format:</label>
-    <select id="outputFormat" class="styled">
-        <option value="original">Original Image</option>
-        <option value="A5">A5</option>
-        <option value="A4">A4</option>
-        <option value="A3">A3</option>
-        <option value="A2">A2</option>
-        <option value="A1">A1</option>
-    </select>
+<div class="main-container">
+    <!-- ===== LEFT COLUMN: All Controls ===== -->
+    <div class="controls-column">
+
+        <!-- Card 1: File & Format -->
+        <div class="control-card">
+            <h2>1. Image & Format</h2>
+            <div class="form-group">
+                <label for="upload" id="upload-label" class="button">Select Image</label>
+                <input type="file" id="upload" accept="image/*"/>
+            </div>
+            <div class="form-group">
+                <label for="outputFormat">Output Paper Size</label>
+                <select id="outputFormat" autocomplete="off">
+                    <option value="original">Original Image</option>
+                    <option value="A5">A5</option>
+                    <option value="A4">A4</option>
+                    <option value="A3">A3</option>
+                    <option value="A2">A2</option>
+                    <option value="A1">A1</option>
+                </select>
+            </div>
+            <div class="form-group" id="orientationContainer" style="display:none; flex-direction: column;">                <label>Orientation</label>
+                <div class="orientation-group">
+                    <input type="radio" id="orientationPortrait" name="orientation" value="portrait" checked>
+                    <label for="orientationPortrait">Portrait</label>
+
+                    <input type="radio" id="orientationLandscape" name="orientation" value="landscape">
+                    <label for="orientationLandscape">Landscape</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Line Overlays -->
+        <div class="control-card">
+            <h2>2. Add Reference Lines</h2>
+            <div class="form-group">
+                <label for="lineColor">Line Color</label>
+                <input type="color" id="lineColor" value="#ff0000">
+            </div>
+            <label>Preset Diamonds & Grids </label>
+            <div class="grid-button-container">
+                <input type="image" class="grid-button" src="img/diagonals.png" id="drawDiagonal" title="Diagonals"/>
+                <input type="image" class="grid-button" src="img/diamond.png" id="drawDiamond1" title="Diamond (2)"/>
+                <input type="image" class="grid-button" src="img/diamond4.png" id="drawDiamond2" title="Diamond (4)"/>
+                <input type="image" class="grid-button" src="img/diamond8.png" id="drawDiamond3" title="Diamond (8)"/>
+                <input type="image" class="grid-button" src="img/diamond16.png" id="drawDiamond4" title="Diamond (16)"/>
+
+                <input type="image" class="grid-button" src="img/cross.png" id="drawCross" title="Cross"/>
+                <input type="image" class="grid-button" src="img/grid4.png" id="drawGrid3" title="Grid 4x4"/>
+                <input type="image" class="grid-button" src="img/grid8.png" id="drawGrid7" title="Grid 8x8"/>
+                <input type="image" class="grid-button" src="img/grid16.png" id="drawGrid15" title="Grid 16x16"/>
+                <input type="image" class="grid-button" src="img/grid32.png" id="drawGrid31" title="Grid 32x32"/>
+            </div>
+
+        </div>
+
+        <!-- Card 3: Custom Grid -->
+        <div class="control-card">
+            <h2>3. Add Custom Grid</h2>
+            <div class="form-group">
+                <label for="gridSpacing">Grid Spacing (cm)</label>
+                <input type="number" id="gridSpacing" placeholder="e.g., 2.5" min="0.1" step="0.1" autocomplete="off">
+            </div>
+            <button class="button" id="applyGridButton">Apply Custom Grid</button>
+        </div>
+
+        <!-- Card 4: Finalize -->
+        <div class="control-card">
+            <h2>4. Finalize & Download</h2>
+            <button class="button" id="clearLines" style="background-color: #dc3545;">Clear All Lines</button>
+            <br>
+            <a class="button" id="downloadLink" download="modified-image.png" style="display:none; background-color: #17a2b8;">Download Image</a>
+        </div>
+
+    </div>
+
+    <!-- ===== RIGHT COLUMN: Canvas & Info ===== -->
+    <div class="canvas-column">
+        <div id="imageDimensions">Upload an image to see its dimensions</div>
+        <canvas id="canvas" style="display:none;"></canvas>
+    </div>
 </div>
-<div id="orientationContainer" style="display:none;">
-    <label>Orientation:</label>
-    <span>
-        <input type="radio" id="orientationPortrait" name="orientation" value="portrait" checked>
-        <label for="orientationPortrait">Portrait</label>
-    </span>
-    <span>
-        <input type="radio" id="orientationLandscape" name="orientation" value="landscape">
-        <label for="orientationLandscape">Landscape</label>
-    </span>
-</div>
 
-<span>
-    <label for="lineColor">Line Color</label>
-    <input class="" type="color" id="lineColor" value="#ff0000"></span>
-
-<div>
-
-    <input type="image" class="image" src="img/diagonals.png" id="drawDiagonal"/>
-    <input type="image" class="image" src="img/diamond.png" id="drawDiamond1"/>
-    <input type="image" class="image" src="img/diamond4.png " id="drawDiamond2"/>
-    <input type="image" class="image" src="img/diamond8.png " id="drawDiamond3"/>
-    <input type="image" class="image" src="img/diamond16.png " id="drawDiamond4"/>
-    <!--    <input type="image" class="image" src="img/diamond32.png " id="drawDiamond5"/>-->
-    <!--    <input type="image" class="image" src="img/diamond64.png " id="drawDiamond6"/>-->
-    <!--    <input type="image" class="image" src="img/diamond128.png " id="drawDiamond7"/>-->
-
-</div>
-
-<div>
-    <input type="image" class="image" src="img/cross.png" id="drawCross"/>
-    <input type="image" class="image" src="img/grid4.png" id="drawGrid3"/>
-    <input type="image" class="image" src="img/grid8.png " id="drawGrid7"/>
-    <input type="image" class="image" src="img/grid16.png " id="drawGrid15"/>
-    <input type="image" class="image" src="img/grid32.png " id="drawGrid31"/>
-    <!--    <input type="image" class="image" src="img/grid64.png " id="drawGrid63"/>-->
-    <!--    <input type="image" class="image" src="img/grid128.png " id="drawGrid127"/>-->
-
-
-</div>
-
-<div>
-    <button class="styled" id="clearLines">Clear Lines</button>
-</div>
-<input type="number" id="gridSpacing" placeholder="Grid spacing (cm)" min="1">
-<button class="styled" onclick="applyGrid()">Apply Grid</button>
-
-<div id="imageDimensions"></div>
-<a class="styled" id="downloadLink" download="modified-image.png" style="display:none;">Download Image</a>
-<canvas id="canvas" style="display:none;"></canvas>
+<!-- Scripts remain unchanged -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
 <script src="script.js"></script>
 </body>

@@ -1,10 +1,10 @@
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
-- [GridMethod: Reference Construction Lines](#gridmethod-reference-line-drawer)
+- [GridMethod: Reference Construction Lines](#gridmethod-reference-construction-lines)
     * [Key Features](#key-features)
-    * [How to Use](#how-to-use)
-    * [Changelog](#changelog)
+    * [How to Use](#how-to-use)* [Changelog](#changelog)
     * [Sample Images](#sample-images)
+        + [New Interface (v0.6)](#new-interface-v06)
         + [Output Formatting](#output-formatting)
             - [Portrait Preview](#portrait-preview)
             - [Landscape Preview](#landscape-preview)
@@ -37,49 +37,60 @@ This webpage allows you to upload a picture, preview it in standard paper format
 
 ## Key Features
 
-* **Print Format Previews:** Choose from standard paper sizes (A5, A4, A3, A2, A1) to see how your image will fit.
-* **Orientation Control:** Select Portrait or Landscape orientation. The tool intelligently suggests a default based on your image's shape.
-* **High-Resolution Export:** Downloads a **300 DPI** PNG file, perfect for high-quality printing.
-* **Multiple Line Overlays:** Add simple grids, diagonals, and complex diamond patterns.
-* **Custom CM Grid:** Create a grid with line spacing defined in centimeters, based on the image's physical dimensions.
-* **Dynamic Filenames:** Downloaded files are automatically named with their format and settings (e.g., `image-A4-portrait-2cm_grid.png`).
+*   **Modern UI:** A clean, responsive, card-based layout that guides the user through the workflow.
+*   **Print Format Previews:** Choose from standard paper sizes (A5, A4, A3, A2, A1) to see how your image will fit.
+*   **Orientation Control:** Select Portrait or Landscape orientation. The tool intelligently suggests a default based on your image's shape.
+*   **High-Resolution Export:** Downloads a **300 DPI** PNG file, perfect for high-quality printing.
+*   **Multiple Line Overlays:** Add simple grids, diagonals, and complex diamond patterns.
+*   **Custom CM Grid:** Create a grid with line spacing defined in centimeters, based on the image's physical dimensions.
+*   **Dynamic Filenames:** Downloaded files are automatically named with their format and settings (e.g., `image-A4-portrait-2cm_grid.png`).
 
 <!-- TOC --><a name="how-to-use"></a>
 
 ## How to Use
 
-1. **Select a file:** Upload your source image.
-2. **Choose an Output Format:**
-    * Use the dropdown menu to select a paper size (e.g., A4). The preview will show how your image fits in that aspect ratio.
-    * If the format is not "Original", orientation controls (Portrait/Landscape) will appear, allowing you to choose how the image is framed.
-3. **Add Reference Lines:**
-    * Click the image buttons to add pre-defined grids or diamond patterns.
-    * To add a custom grid, enter a value in centimeters into the "Grid spacing (cm)" field and click "Apply Grid".
-4. **Download Your Image:**
-    * Click the "Download Image" button.
-    * The tool will generate a high-resolution 300 DPI file in the background and start the download. If the process is slow, the button will display "Generating..." to provide feedback.
+1.  **Select a file:** Upload your source image.
+2.  **Choose an Output Format:**
+    *   Use the dropdown menu to select a paper size (e.g., A4). The preview will show how your image fits in that aspect ratio.
+    *   If the format is not "Original", orientation controls (Portrait/Landscape) will appear, allowing you to choose how the image is framed.
+3.  **Add Reference Lines:**
+    *   Click the image buttons to add pre-defined grids or diamond patterns.
+    *   To add a custom grid, enter a value in centimeters into the "Grid spacing (cm)" field and click "Apply Grid".
+4.  **Download Your Image:**
+    *   Click the "Download Image" button.
+    *   The tool will generate a high-resolution 300 DPI file in the background and start the download. If the process is slow, the button will display "Generating..." to provide feedback.
 
 <!-- TOC --><a name="changelog"></a>
 
 ## Changelog
 
-**v 0.5**
+**v 0.6**
+-   **Complete UI/UX Overhaul:** The interface has been rebuilt from the ground up with a modern, responsive, two-column layout.
+-   **Workflow-Based Controls:** Controls are now grouped into logical cards (Image, Lines, Grid, Finalize) to guide the user through the process.
+-   **Improved Styling:** All buttons, inputs, and selectors have been restyled for a professional and cohesive look and feel.
+-   **Bug Fixes:** Resolved critical JavaScript loading and event listener errors for improved stability.
 
-- **Output Formatting:** Added ability to select A-series paper sizes and orientation.
-- **High-Resolution Export:** Download now generates a 300 DPI print-quality PNG.
-- **State Management:** Users can now stack multiple line commands (e.g., a grid and a diamond).
-- **Dynamic Filenames:** Files are downloaded with descriptive names.
-- **UI Overhaul:** Added format selection, orientation controls, and a "Generating..." download indicator.
+**v 0.5**
+-   **Output Formatting:** Added ability to select A-series paper sizes and orientation.
+-   **High-Resolution Export:** Download now generates a 300 DPI print-quality PNG.
+-   **State Management:** Users can now stack multiple line commands (e.g., a grid and a diamond).
+-   **Dynamic Filenames:** Files are downloaded with descriptive names.
 
 **v 0.4b**
-
-- retrieval of the image physical dimensions by calculating the conversion pixels to cms
-- Added the option to create a regular grid with each line separated by user-input cms
-- Fixes and Improvements
+-   retrieval of the image physical dimensions by calculating the conversion pixels to cms
+-   Added the option to create a regular grid with each line separated by user-input cms
+-   Fixes and Improvements
 
 <!-- TOC --><a name="sample-images"></a>
 
 ## Sample Images
+
+<!-- TOC --><a name="new-interface-v06"></a>
+### New Interface (v0.6)
+
+The application has been redesigned with a clean, modern, and responsive user interface.
+
+<img src="https://github.com/FranGarc/GridMethod/blob/main/screenshots/new_interface.png?raw=true" alt="New Interface" width="700">
 
 <!-- TOC --><a name="output-formatting"></a>
 
