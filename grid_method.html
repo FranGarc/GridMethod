@@ -133,6 +133,29 @@
     <span>Select a file</span>
 </label>
 
+<div>
+    <label for="outputFormat">Output Format:</label>
+    <select id="outputFormat" class="styled">
+        <option value="original">Original Image</option>
+        <option value="A5">A5</option>
+        <option value="A4">A4</option>
+        <option value="A3">A3</option>
+        <option value="A2">A2</option>
+        <option value="A1">A1</option>
+    </select>
+</div>
+<div id="orientationContainer" style="display:none;">
+    <label>Orientation:</label>
+    <span>
+        <input type="radio" id="orientationPortrait" name="orientation" value="portrait" checked>
+        <label for="orientationPortrait">Portrait</label>
+    </span>
+    <span>
+        <input type="radio" id="orientationLandscape" name="orientation" value="landscape">
+        <label for="orientationLandscape">Landscape</label>
+    </span>
+</div>
+
 <span>
     <label for="lineColor">Line Color</label>
     <input class="" type="color" id="lineColor" value="#ff0000"></span>

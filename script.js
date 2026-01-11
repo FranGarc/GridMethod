@@ -1,3 +1,26 @@
+const paperSizes = {
+    // All 'A' paper sizes have an aspect ratio of 1:sqrt(2)
+    // We define both portrait and landscape ratios for convenience.
+    // Portrait: Width is shorter than Height (e.g., 210mm x 297mm) -> Ratio < 1
+    // Landscape: Width is longer than Height (e.g., 297mm x 210mm) -> Ratio > 1
+    A_PORTRAIT_RATIO: 1 / Math.sqrt(2), // approx 0.707
+    A_LANDSCAPE_RATIO: Math.sqrt(2),   // approx 1.414
+    // Physical dimensions in millimeters [width, height] for Portrait
+        dimensions: {
+            A1: [594, 841],
+            A2: [420, 594],
+            A3: [297, 420],
+            A4: [210, 297],
+            A5: [148, 210]
+        }
+};
+
+// handle the user chosen orientation
+document.getElementById('orientationPortrait').addEventListener('change', transformImageToFormat);
+document.getElementById('orientationLandscape').addEventListener('change', transformImageToFormat);
+
+document.getElementById('outputFormat').addEventListener('change', handleFormatChange);
+
 document.getElementById('upload').addEventListener('change', handleImageUpload);
 document.getElementById('drawCross').addEventListener('click', drawCross);
 document.getElementById('drawDiagonal').addEventListener('click', drawDiagonals);
@@ -19,11 +42,148 @@ let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
 let img = new Image();
 let lineWidth = 2;
+let drawingStack = []; // <-- global variable to store drawing commands
+let customGridSpacing = 0;
 let widthPx = 0;
 let heightPx = 0;
 let widthCm = 0;
 let heightCm = 0;
 const InchToCm = 2.54;
+
+
+
+/**
+ * Helper function to programmatically trigger a download.
+ */
+function triggerDownload(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+/**
+ * Calculates the position and size to draw an image to "fit" inside a canvas
+ * while maintaining its aspect ratio.
+ */
+function calculateFitDimensions(image, canvas) {
+    const imageRatio = image.width / image.height;
+    const canvasRatio = canvas.width / canvas.height;
+    let drawWidth, drawHeight, drawX, drawY;
+
+    if (imageRatio > canvasRatio) {
+        drawWidth = canvas.width;
+        drawHeight = canvas.width / imageRatio;
+        drawX = 0;
+        drawY = (canvas.height - drawHeight) / 2;
+    } else {
+        drawHeight = canvas.height;
+        drawWidth = canvas.height * imageRatio;
+        drawY = 0;
+        drawX = (canvas.width - drawWidth) / 2;
+    }
+    return { drawX, drawY, drawWidth, drawHeight };
+}
+
+function checkUserUploadedImage(){
+    if (!img.src) {
+        alert("Please upload an image first.");
+        return;
+    }
+}
+
+
+
+// REVISED version of transformImageToFormat
+function transformImageToFormat() {
+    if (!img.src) {
+        alert("Please upload an image first.");
+        document.getElementById('outputFormat').value = 'original'; // Reset dropdown
+        return;
+    }
+
+    const format = document.getElementById('outputFormat').value;
+    // Set up the preview canvas size based on the format
+    if (format === 'original') {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        showDownloadLink();
+        // Also hide the orientation controls if they are visible
+        document.getElementById('orientationContainer').style.display = 'none';
+        return;
+    }else{
+        const selectedOrientation = document.querySelector('input[name="orientation"]:checked').value;
+        const formatAspectRatio = (selectedOrientation === 'portrait')
+            ? paperSizes.A_PORTRAIT_RATIO
+            : paperSizes.A_LANDSCAPE_RATIO;
+        const imageAspectRatio = img.width / img.height;
+
+        let newWidth, newHeight;
+        if (imageAspectRatio > formatAspectRatio) {
+            newWidth = img.width;
+            newHeight = img.width / formatAspectRatio;
+        } else {
+            newHeight = img.height;
+            newWidth = img.height * formatAspectRatio;
+        }
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+    }
+
+    // After transforming the canvas, redraw everything
+    redrawLinesOnCanvas(ctx);
+    showDownloadLink();
+}
+
+/**
+ * Calculates the position and size to draw an image to "fit" inside a canvas
+ * while maintaining its aspect ratio.
+ * @param {Image} image - The source image object.
+ * @param {HTMLCanvasElement} canvas - The destination canvas.
+ * @returns {object} - { drawX, drawY, drawWidth, drawHeight }
+ */
+function calculateFitDimensions(image, canvas) {
+    const imageRatio = image.width / image.height;
+    const canvasRatio = canvas.width / canvas.height;
+    let drawWidth, drawHeight, drawX, drawY;
+
+    if (imageRatio > canvasRatio) {
+        // Image is wider than canvas, so fit width
+        drawWidth = canvas.width;
+        drawHeight = canvas.width / imageRatio;
+        drawX = 0;
+        drawY = (canvas.height - drawHeight) / 2; // Center vertically
+    } else {
+        // Image is taller than or equal to canvas, so fit height
+        drawHeight = canvas.height;
+        drawWidth = canvas.height * imageRatio;
+        drawY = 0;
+        drawX = (canvas.width - drawWidth) / 2; // Center horizontally
+    }
+
+    return { drawX, drawY, drawWidth, drawHeight };
+}
+
+// function to manage UI visibility
+function handleFormatChange() {
+    const format = document.getElementById('outputFormat').value;
+    const orientationContainer = document.getElementById('orientationContainer');
+
+    if (format === 'original') {
+        orientationContainer.style.display = 'none'; // Hide orientation controls
+    } else {
+        orientationContainer.style.display = 'flex'; // Show orientation controls
+        // Sensible default: match image orientation
+        const imageIsPortrait = img.width < img.height;
+        document.getElementById('orientationPortrait').checked = imageIsPortrait;
+        document.getElementById('orientationLandscape').checked = !imageIsPortrait;
+    }
+
+    transformImageToFormat(); // Now update the canvas
+}
 
 
 function handleImageUpload(event) {
@@ -34,6 +194,12 @@ function handleImageUpload(event) {
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0);
             canvas.style.display = 'block';
+
+            // Reset the format dropdown to 'original' for the new image
+            document.getElementById('outputFormat').value = 'original';
+            document.getElementById('orientationContainer').style.display = 'none';
+            showDownloadLink();
+
 
             // Read EXIF metadata to get DPI
             EXIF.getData(img, function() {
@@ -86,71 +252,69 @@ function applyGrid() {
         return;
     }
 
-    // Ensure canvas DPI is available before calling the grid function
-    if (canvas.dpi) {
-        drawGridOverlay(canvas.dpi, spacingCm);
-    } else {
-        alert("Please upload an image first to determine DPI.");
-    }
-}
-function drawGridOverlay(dpi, nCmSpacing) {
-    console.log(`drawGridOverlay triggered with ${nCmSpacing}cm spacing for ${dpi}PPI dpi `);
+    // Update the global spacing variable for the filename
+    customGridSpacing = spacingCm;
 
-    const spacingPx = (nCmSpacing / InchToCm) * dpi; // Convert cm to pixels
-    const width = canvas.width;
-    const height = canvas.height;
-
-    // Draw grid
-    ctx.beginPath();
-    let lineColor = document.getElementById('lineColor').value;
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = lineColor; // Semi-transparent black for the grid lines
-    // Draw vertical lines
-    for (let x = spacingPx; x < width; x += spacingPx) {
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-    }
-
-    // Draw horizontal lines
-    for (let y = spacingPx; y < height; y += spacingPx) {
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-    }
-
-    ctx.stroke(); // Draw all the lines
-    ctx.closePath();
+    // Push the command to the stack
+    drawingStack.push({ type: 'customGrid', spacing: spacingCm });
+    // Redraw the canvas and update the download link
+    redrawLinesOnCanvas(ctx);
     showDownloadLink();
 }
+/**
+ * Draws a grid with specific spacing on a given canvas context.
+ * @param {number} spacingPx - The grid spacing in PIXELS.
+ * @param {CanvasRenderingContext2D} context - The context to draw on.
+ * @param {HTMLCanvasElement} canvas - The canvas element to get dimensions from.
+ */
+function drawGridOverlay(spacingPx, context, canvas) {
+    if (!context || !canvas || !spacingPx || spacingPx <= 0) return;
 
-function checkUserUploadedImage(){
-    if (!img.src) {
-        alert("Please upload an image first.");
-        return;
+    const width = canvas.width;
+    const height = canvas.height;
+    const lineColor = document.getElementById('lineColor').value;
+
+    context.strokeStyle = lineColor;
+    context.lineWidth = lineWidth;
+    context.beginPath();
+
+    for (let x = spacingPx; x < width; x += spacingPx) {
+        context.moveTo(x, 0);
+        context.lineTo(x, height);
     }
+    for (let y = spacingPx; y < height; y += spacingPx) {
+        context.moveTo(0, y);
+        context.lineTo(width, y);
+    }
+    context.stroke();
 }
 
+
+
 function clearLines(){
-    ctx.drawImage(img, 0, 0); // Redraw the original image
-    let downloadLink = document.getElementById('downloadLink');
-    downloadLink.href = canvas.toDataURL('image/png');
-    downloadLink.style.display = 'block'; // remove download link
+    drawingStack = []; // Clear the commands
+    customGridSpacing = 0; // reset the spacing
+    transformImageToFormat(); // This redraws the base image and calls showDownloadLink
 }
 
 function drawCross(){
     checkUserUploadedImage()
-    grid(2);
+    drawingStack.push({ type: 'grid', param: 2 });
+    redrawLinesOnCanvas(ctx); // Redraw all lines on the preview canvas
     showDownloadLink();
 }
 
 function drawGrid3(){
     checkUserUploadedImage()
-    grid(4);
+    drawingStack.push({ type: 'grid', param: 4 });
+    redrawLinesOnCanvas(ctx); // Redraw all lines on the preview canvas
     showDownloadLink();
 }
 
 function drawGrid7(){
     checkUserUploadedImage()
-    grid(8);
+    drawingStack.push({ type: 'grid', param: 8 });
+    redrawLinesOnCanvas(ctx); // Redraw all lines on the preview canvas
     showDownloadLink();
 }
 
@@ -158,63 +322,50 @@ function drawGrid7(){
 
 function drawGrid15(){
     checkUserUploadedImage()
-    grid(16);
+    drawingStack.push({ type: 'grid', param: 16 });
+    redrawLinesOnCanvas(ctx); // Redraw all lines on the preview canvas
     showDownloadLink();
 }
 
 function drawGrid31(){
     checkUserUploadedImage()
-    grid(32);
+    drawingStack.push({ type: 'grid', param: 32 });
+    redrawLinesOnCanvas(ctx); // Redraw all lines on the preview canvas
     showDownloadLink();
 }
 
 function drawDiagonals() {
     checkUserUploadedImage();
-    let lineColor = document.getElementById('lineColor').value;
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = lineWidth;
-
-    let width = canvas.width
-    let height = canvas.height
-    ctx.moveTo(0, 0);
-    ctx.lineTo(width, height);
-    
-    ctx.moveTo(width, 0);
-    ctx.lineTo(0, height);
-
-    ctx.stroke();
+    drawingStack.push({ type: 'diagonals' });
+    redrawLinesOnCanvas(ctx); // Redraw on the main preview canvas
     showDownloadLink();
 
 }
 function drawDiamond1() {
     checkUserUploadedImage();
-    drawDiagonals();
-    diamond(2);
+    drawingStack.push({ type: 'diamond', param: 2 });
+    redrawLinesOnCanvas(ctx);
     showDownloadLink();
-
 }
 
 function drawDiamond2() {
     checkUserUploadedImage();
-    drawDiagonals();
-    diamond(4);
-    // Show download link
+    drawingStack.push({ type: 'diamond', param: 4 });
+    redrawLinesOnCanvas(ctx);
     showDownloadLink();
 }
 
 function drawDiamond3() {
     checkUserUploadedImage();
-    drawDiagonals();
-    diamond(8);
-    // Show download link
+    drawingStack.push({ type: 'diamond', param: 8 });
+    redrawLinesOnCanvas(ctx);
     showDownloadLink();
 }
 
 function drawDiamond4() {
     checkUserUploadedImage();
-    drawDiagonals();
-    diamond(16);
-    // Show download link
+    drawingStack.push({ type: 'diamond', param: 16 });
+    redrawLinesOnCanvas(ctx);
     showDownloadLink();
 }
 
@@ -222,81 +373,102 @@ function testQuarters(){
     drawDiagonals();
     diamond(16);
 }
-function diamond(parameter){
-    console.log("diamond parameter: " + parameter);
 
-    let width = canvas.width;
-    let height = canvas.height;
+/**
+ * Draws a diamond pattern on a given canvas context.
+ * @param {number} parameter - The number of divisions.
+ * @param {CanvasRenderingContext2D} context - The context to draw on.
+ * @param {HTMLCanvasElement} canvas - The canvas element to get dimensions from.
+ */
+function diamond(parameter, context, canvas) {
+    if (!context || !canvas) return; // Safety check
 
-    let topPoints = createTopPoints(parameter, width);
-    let leftPoints = createLeftPoints(parameter, height);
-    let bottomPoints = topPoints.reverse();
-    let rightPoints = leftPoints.reverse();
+    const width = canvas.width;
+    const height = canvas.height;
 
-    let lineColor = document.getElementById('lineColor').value;
+    const topPoints = createTopPoints(parameter, width);
+    const leftPoints = createLeftPoints(parameter, height);
+    // Use spread operator to create a shallow copy before reversing
+    const bottomPoints = [...topPoints].reverse();
+    const rightPoints = [...leftPoints].reverse();
 
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = lineWidth;
-    ctx.beginPath();
+    const lineColor = document.getElementById('lineColor').value;
 
-    let length = topPoints.length;
-    console.log("length: " + length);
-    for (let index = 0; index < topPoints.length; ++index) {
-
-            let topPoint = topPoints[index];
-            let bottomPoint = topPoints[length - index -1];
-            let leftPoint = leftPoints[index];
-            let rightPoint = leftPoints[length - index - 1];
-
-
-            ctx.moveTo(topPoint, 0);
-            ctx.lineTo(0, leftPoint);
-            ctx.moveTo(topPoint, 0);
-            ctx.lineTo(width, rightPoint);
-
-
-            ctx.moveTo(bottomPoint, height);
-            ctx.lineTo(0, leftPoint);
-            ctx.moveTo(bottomPoint, height);
-            ctx.lineTo(width, rightPoint);
-        }
-
-    ctx.stroke();
-    grid(parameter);
-}
-
-function grid(parameter){
-    console.log("grid parameter: " + parameter);
-
-    // Draw diagonal lines
-    let width = canvas.width;
-    let height = canvas.height;
-    let topPoints = createTopPoints(parameter, width);
-    let leftPoints = createLeftPoints(parameter, height);
-    let lineColor = document.getElementById('lineColor').value;
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = lineWidth;
-    ctx.beginPath();
+    context.strokeStyle = lineColor;
+    context.lineWidth = lineWidth;
+    context.beginPath();
 
     for (let index = 0; index < topPoints.length; ++index) {
-        let startPoint = topPoints[index];
-        console.log("startPoint: " + startPoint);
+        const topPoint = topPoints[index];
+        const bottomPoint = bottomPoints[index];
+        const leftPoint = leftPoints[index];
+        const rightPoint = rightPoints[index];
 
-        ctx.moveTo(startPoint, 0);
-        ctx.lineTo(startPoint, height);
+        context.moveTo(topPoint, 0);
+        context.lineTo(0, leftPoint);
+
+        context.moveTo(topPoint, 0);
+        context.lineTo(width, rightPoint);
+
+        context.moveTo(bottomPoint, height);
+        context.lineTo(0, leftPoint);
+
+        context.moveTo(bottomPoint, height);
+        context.lineTo(width, rightPoint);
     }
+    context.stroke();
 
-    for (let index = 0; index < leftPoints.length; ++index) {
-        let startPoint = leftPoints[index];
-        console.log("startPoint: " + startPoint);
-
-        ctx.moveTo(0, startPoint);
-        ctx.lineTo(width, startPoint);
-    }
-    ctx.stroke();
-
+    // The diamond pattern also includes a grid
+    grid(parameter, context, canvas);
 }
+/**
+ * Draws a grid on a given canvas context.
+ * @param {number} parameter - The number of divisions for the grid.
+ * @param {CanvasRenderingContext2D} context - The context to draw on.
+ * @param {HTMLCanvasElement} canvas - The canvas element to get dimensions from.
+ */
+function grid(parameter, context, canvas) {
+    if (!context || !canvas) return; // Safety check
 
+    const width = canvas.width;
+    const height = canvas.height;
+    const topPoints = createTopPoints(parameter, width);
+    const leftPoints = createLeftPoints(parameter, height);
+    const lineColor = document.getElementById('lineColor').value;
+
+    context.strokeStyle = lineColor;
+    context.lineWidth = lineWidth;
+    context.beginPath();
+
+    for (const startPoint of topPoints) {
+        context.moveTo(startPoint, 0);
+        context.lineTo(startPoint, height);
+    }
+
+    for (const startPoint of leftPoints) {
+        context.moveTo(0, startPoint);
+        context.lineTo(width, startPoint);
+    }
+    context.stroke();
+}
+/**
+ * Draws diagonal lines on a given canvas context.
+ * @param {CanvasRenderingContext2D} context - The context to draw on.
+ * @param {HTMLCanvasElement} canvas - The canvas element to get dimensions from.
+ */
+function diagonals(context, canvas) {
+    if (!context || !canvas) return; // Safety check
+
+    const lineColor = document.getElementById('lineColor').value;
+    context.strokeStyle = lineColor;
+    context.lineWidth = lineWidth;
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.lineTo(canvas.width, canvas.height);
+    context.moveTo(canvas.width, 0);
+    context.lineTo(0, canvas.height);
+    context.stroke();
+}
 
 function generateFractions(parameter, dimension) {
     let fractions = [];
@@ -318,9 +490,140 @@ function createLeftPoints(divideBy, height){
     return points
 }
 
-function showDownloadLink(){
+function showDownloadLink() {
+    let filename;
+    const format = document.getElementById('outputFormat').value;
+
+    if (format === 'original') {
+        filename = 'original-image';
+    } else {
+        const selectedOrientation = document.querySelector('input[name="orientation"]:checked').value;
+        filename = `image-${format}-${selectedOrientation}`;
+    }
+    // ---  Check for custom grid spacing ---
+    if (customGridSpacing > 0) {
+        filename += `-${customGridSpacing}cm_grid`;
+    }
+    filename += '.png';
     let downloadLink = document.getElementById('downloadLink');
-    downloadLink.href = canvas.toDataURL('image/png');
+    downloadLink.download = filename;
+
+
+    // --- High-Resolution Export Logic ---
+    // Remove any previous listeners to avoid duplicates
+    downloadLink.onclick = null;
+    // Add a new click listener
+    downloadLink.onclick = (event) => {
+        event.preventDefault(); // Prevent default link behavior
+        // --- LOADING INDICATOR FIX ---
+        const originalText = downloadLink.textContent;
+        downloadLink.textContent = "Generating...";
+        downloadLink.style.pointerEvents = 'none'; // Disable button
+        downloadLink.style.opacity = '0.7';
+
+        // Use a small timeout to let the UI update before the heavy work
+        setTimeout(() => {
+            try { // Use a try...finally block to ensure the button is always restored
+                const exportFormat = document.getElementById('outputFormat').value;
+
+                if (exportFormat === 'original') {
+                    const url = canvas.toDataURL('image/png');
+                    triggerDownload(url, downloadLink.download);
+                    return; // Early exit for simple case
+                }
+
+                console.log("Starting high-resolution export...");
+                const selectedOrientation = document.querySelector('input[name="orientation"]:checked').value;
+                const dpi = 300;
+                let [widthMm, heightMm] = paperSizes.dimensions[exportFormat];
+
+                if (selectedOrientation === 'landscape') {
+                    [widthMm, heightMm] = [Math.max(widthMm, heightMm), Math.min(widthMm, heightMm)];
+                } else {
+                    [widthMm, heightMm] = [Math.min(widthMm, heightMm), Math.max(widthMm, heightMm)];
+                }
+
+                const targetWidth = Math.round((widthMm / 10) / InchToCm * dpi);
+                const targetHeight = Math.round((heightMm / 10) / InchToCm * dpi);
+
+                console.log(`Exporting at ${targetWidth}x${targetHeight}px for ${dpi} DPI`);
+
+                const exportCanvas = document.createElement('canvas');
+                exportCanvas.width = targetWidth;
+                exportCanvas.height = targetHeight;
+                const exportCtx = exportCanvas.getContext('2d');
+
+                // The magic step: redraw everything on the high-res hidden canvas
+                redrawLinesOnCanvas(exportCtx);
+
+                const url = exportCanvas.toDataURL('image/png');
+                triggerDownload(url, downloadLink.download);
+                console.log("Export complete.");
+
+            } finally {
+                // --- RESTORE BUTTON ---
+                // This block runs whether the export succeeds or fails
+                downloadLink.textContent = originalText;
+                downloadLink.style.pointerEvents = 'auto';
+                downloadLink.style.opacity = '1';
+            }
+        }, 10); // 10ms delay is enough for the UI to repaint
+    };
+
     downloadLink.style.display = 'block';
 }
 
+// To avoid code duplication in redrawLinesOnCanvas
+function getPixelsPerCm(targetCanvas) {
+    const format = document.getElementById('outputFormat').value;
+    if (format === 'original') {
+        // For original, use the image's own DPI if available
+        return canvas.dpi / InchToCm;
+    }
+
+    // For formatted exports (A1, A2, etc.), calculate based on known dimensions
+    let [widthMm, heightMm] = paperSizes.dimensions[format];
+    const orientation = document.querySelector('input[name="orientation"]:checked').value;
+
+    if (orientation === 'landscape') {
+        // Ensure width is the larger dimension for landscape
+        return targetCanvas.width / Math.max(widthMm, heightMm / 10);
+    } else {
+        // Ensure width is the smaller dimension for portrait
+        return targetCanvas.width / Math.min(widthMm, heightMm / 10);
+    }
+}
+
+function redrawLinesOnCanvas(context) {
+    const targetCanvas = context.canvas;
+    const dpi = 300; // Assume 300 for export, or use a passed value
+    const format = document.getElementById('outputFormat').value;
+    if (format === 'original' && targetCanvas === canvas) {
+        // Only resize if we are drawing on the main preview canvas
+        targetCanvas.width = img.width;
+        targetCanvas.height = img.height;
+    }
+
+    // First, restore the base image on the target canvas
+    // (This also handles the letterboxing for formatted exports)
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
+    const fit = calculateFitDimensions(img, targetCanvas);
+    context.drawImage(img, fit.drawX, fit.drawY, fit.drawWidth, fit.drawHeight);
+
+    // Now, loop through the stack and draw everything on top
+    drawingStack.forEach(command => {
+        if (command.type === 'grid') {
+            grid(command.param, context, targetCanvas);
+        } else if (command.type === 'diagonals') {
+            diagonals(context, targetCanvas);
+        } else if (command.type === 'diamond') {
+            diagonals(context, targetCanvas); // Diamonds include diagonals
+            diamond(command.param, context, targetCanvas);
+        } else if (command.type === 'customGrid') {
+            const pixelsPerCm = getPixelsPerCm(targetCanvas);
+            const spacingPx = command.spacing * pixelsPerCm;
+            drawGridOverlay(spacingPx, context, targetCanvas);
+        }
+    });
+}
