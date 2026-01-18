@@ -118,6 +118,13 @@ function getPixelsPerCm(targetCanvas) {
 // Master drawing function
 function redrawLinesOnCanvas(context) {
     const targetCanvas = context.canvas;
+
+    // Calculate thickness: 1px minimum, or a ratio of the width
+    const dynamicWidth = Math.max(3, targetCanvas.width / 500);
+    context.lineWidth = dynamicWidth;
+
+    lineWidth = dynamicWidth;
+
     context.fillStyle = 'black';
     context.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
     const fit = calculateFitDimensions(img, targetCanvas);
@@ -382,7 +389,7 @@ function grid(parameter, context, canvas) {
     const lineColor = document.getElementById('lineColor').value;
 
     context.strokeStyle = lineColor;
-    context.lineWidth = lineWidth;
+//    context.lineWidth = lineWidth;
     context.beginPath();
 
     for (const startPoint of topPoints) {
