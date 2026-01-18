@@ -1,4 +1,84 @@
 // =================================================================
+// [+] TRANSLATION DICTIONARY [+]
+// =================================================================
+const translations = {
+    en: {
+        mainTitle: "Reference Line Drawer",
+        card1Title: "1. Image & Format",
+        selectImg: "Select Image",
+        outputSize: "Output Paper Size",
+        originalImage: "Original Image",
+        orientation: "Orientation",
+        portrait: "Portrait",
+        landscape: "Landscape",
+        card2Title: "2. Add Reference Lines",
+        lineColor: "Line Color",
+        presets: "Preset Grids & Diamonds",
+        card3Title: "3. Add Custom Grid",
+        gridLinesSpacing: "Grid Spacing (cm)",
+        applyCustomGrid: "Apply Custom Grid",
+        card4Title: "4. Finalize & Download",
+
+        // Tooltips
+        diagTooltip: "Diagonals",
+        crossTooltip: "Cross",
+        grid4Tooltip: "Grid 4x4",
+
+        clearBtn: "Clear All Lines",
+        downloadBtn: "Download Image"
+    },
+    es: {
+        mainTitle: "Dibujante de Líneas Guía",
+        card1Title: "1. Imagen y Formato",
+        selectImg: "Seleccionar Imagen",
+        outputSize: "Tamaño del Papel",
+        originalImage: "Imagen Original",
+        orientation: "Orientación",
+        portrait: "Vertical",
+        landscape: "Horizontal",
+        card2Title: "2. Añadir Líneas",
+        lineColor: "Color de Línea",
+        presets: "Cuadrículas y Diamantes",
+        card3Title: "3. Añadir Rejilla Personalizada",
+        gridLinesSpacing: "Espaciado Entre Líneas (cm)",
+        applyCustomGrid: "Aplicar Rejilla Personalizada",
+        card4Title: "4. Finalizar & Descargar",
+
+        // Tooltips
+        diagTooltip: "Diagonales",
+        crossTooltip: "Cruz",
+        grid4Tooltip: "Cuadrícula 4x4",
+        clearBtn: "Borrar Todo",
+        downloadBtn: "Descargar Imagen"
+    }
+    // Add 'fr' (French) here if desired
+};
+
+// =================================================================
+// [+] TRANSLATION FUNCTION [+]
+// =================================================================
+function updateLanguage(lang) {
+    // 1. Update text content (Labels, Headers, Buttons)
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
+
+    // 2. Update tooltips (The grid icon buttons)
+    document.querySelectorAll('[data-i18n-title]').forEach(element => {
+        const key = element.getAttribute('data-i18n-title');
+        if (translations[lang][key]) {
+            element.title = translations[lang][key];
+        }
+    });
+
+    // Optional: Save preference
+    localStorage.setItem('gridToolLang', lang);
+}
+
+// =================================================================
 // [+] STEP 1: DEFINE ALL GLOBAL VARIABLES FIRST [+]
 // =================================================================
 const paperSizes = {
@@ -39,6 +119,17 @@ document.getElementById('drawGrid31').addEventListener('click', drawGrid31);
 document.getElementById('clearLines').addEventListener('click', clearLines);
 document.getElementById('applyGridButton').addEventListener('click', applyGrid);
 
+const langSelect = document.getElementById('languageSelect');
+if (langSelect) {
+    langSelect.addEventListener('change', (e) => {
+        updateLanguage(e.target.value);
+    });
+
+    // Check if user has a saved preference on load
+    const savedLang = localStorage.getItem('gridToolLang') || 'en';
+    langSelect.value = savedLang;
+    updateLanguage(savedLang);
+}
 
 // =================================================================
 // [+] STEP 3: DEFINE ALL FUNCTIONS [+]

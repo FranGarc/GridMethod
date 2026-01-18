@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>GridMethod - Reference Line Drawer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridMethod - Reference Line Drawer</title>
     <!-- I'll add all the new CSS directly in the <style> tag for simplicity -->
     <style>
         /* --- General Body & Layout --- */
@@ -209,23 +210,31 @@
 </head>
 <body>
 
-<h1>Reference Line Drawer</h1>
+<h1 data-i18n="mainTitle">Reference Line Drawer</h1>
 
 <div class="main-container">
     <!-- ===== LEFT COLUMN: All Controls ===== -->
     <div class="controls-column">
 
+        <div class="form-group">
+            <label>Language / Idioma</label>
+            <select id="languageSelect" autocomplete="off">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+
+            </select>
+        </div>
         <!-- Card 1: File & Format -->
         <div class="control-card">
-            <h2>1. Image & Format</h2>
+            <h2 data-i18n="card1Title">1. Image & Format</h2>
             <div class="form-group">
-                <label for="upload" id="upload-label" class="button">Select Image</label>
+                <label for="upload" id="upload-label" class="button" data-i18n="selectImg">Select Image</label>
                 <input type="file" id="upload" accept="image/*"/>
             </div>
             <div class="form-group">
-                <label for="outputFormat">Output Paper Size</label>
+                <label for="outputFormat" data-i18n="outputSize">Output Paper Size</label>
                 <select id="outputFormat" autocomplete="off">
-                    <option value="original">Original Image</option>
+                    <option value="original" data-i18n="originalImage">Original Image</option>
                     <option value="A5">A5</option>
                     <option value="A4">A4</option>
                     <option value="A3">A3</option>
@@ -233,33 +242,33 @@
                     <option value="A1">A1</option>
                 </select>
             </div>
-            <div class="form-group" id="orientationContainer" style="display:none; flex-direction: column;">                <label>Orientation</label>
+            <div class="form-group" id="orientationContainer" style="display:none; flex-direction: column;"><label data-i18n="orientation">Orientation</label>
                 <div class="orientation-group">
                     <input type="radio" id="orientationPortrait" name="orientation" value="portrait" checked>
-                    <label for="orientationPortrait">Portrait</label>
+                    <label for="orientationPortrait" data-i18n="portrait">Portrait</label>
 
                     <input type="radio" id="orientationLandscape" name="orientation" value="landscape">
-                    <label for="orientationLandscape">Landscape</label>
+                    <label for="orientationLandscape" data-i18n="landscape">Landscape</label>
                 </div>
             </div>
         </div>
 
         <!-- Card 2: Line Overlays -->
         <div class="control-card">
-            <h2>2. Add Reference Lines</h2>
+            <h2 data-i18n="card2Title">2. Add Reference Lines</h2>
             <div class="form-group">
-                <label for="lineColor">Line Color</label>
+                <label for="lineColor" data-i18n="lineColor">Line Color</label>
                 <input type="color" id="lineColor" value="#ff0000">
             </div>
-            <label>Preset Diamonds & Grids </label>
+            <label data-i18n="presets">Preset Diamonds & Grids </label>
             <div class="grid-button-container">
-                <input type="image" class="grid-button" src="img/diagonals.png" id="drawDiagonal" title="Diagonals"/>
+                <input type="image" class="grid-button" src="img/diagonals.png" id="drawDiagonal" title="Diagonals" data-i18n="diagTooltip"/>
                 <input type="image" class="grid-button" src="img/diamond.png" id="drawDiamond1" title="Diamond (2)"/>
                 <input type="image" class="grid-button" src="img/diamond4.png" id="drawDiamond2" title="Diamond (4)"/>
                 <input type="image" class="grid-button" src="img/diamond8.png" id="drawDiamond3" title="Diamond (8)"/>
                 <input type="image" class="grid-button" src="img/diamond16.png" id="drawDiamond4" title="Diamond (16)"/>
 
-                <input type="image" class="grid-button" src="img/cross.png" id="drawCross" title="Cross"/>
+                <input type="image" class="grid-button" src="img/cross.png" id="drawCross" title="Cross" data-i18n-title="crossTooltip"/>
                 <input type="image" class="grid-button" src="img/grid4.png" id="drawGrid3" title="Grid 4x4"/>
                 <input type="image" class="grid-button" src="img/grid8.png" id="drawGrid7" title="Grid 8x8"/>
                 <input type="image" class="grid-button" src="img/grid16.png" id="drawGrid15" title="Grid 16x16"/>
@@ -270,20 +279,20 @@
 
         <!-- Card 3: Custom Grid -->
         <div class="control-card">
-            <h2>3. Add Custom Grid</h2>
+            <h2 data-i18n="card3Title">3. Add Custom Grid</h2>
             <div class="form-group">
-                <label for="gridSpacing">Grid Spacing (cm)</label>
-                <input type="number" id="gridSpacing" placeholder="e.g., 2.5" min="0.1" step="0.1" autocomplete="off">
+                <label for="gridSpacing" data-i18n="gridLinesSpacing">Grid Spacing (cm)</label>
+                <input type="number" id="gridSpacing" placeholder="e.g., 1" min="0.1" step="0.1" autocomplete="off">
             </div>
-            <button class="button" id="applyGridButton">Apply Custom Grid</button>
+            <button class="button" id="applyGridButton" data-i18n="applyCustomGrid">Apply Custom Grid</button>
         </div>
 
         <!-- Card 4: Finalize -->
         <div class="control-card">
-            <h2>4. Finalize & Download</h2>
-            <button class="button" id="clearLines" style="background-color: #dc3545;">Clear All Lines</button>
+            <h2 data-i18n="card4Title">4. Finalize & Download</h2>
+            <button class="button" id="clearLines" style="background-color: #dc3545;" data-i18n="clearBtn">Clear All Lines</button>
             <br>
-            <a class="button" id="downloadLink" download="modified-image.png" style="display:none; background-color: #17a2b8;">Download Image</a>
+            <a class="button" id="downloadLink" download="modified-image.png" style="display:none; background-color: #17a2b8;" data-i18n="downloadBtn">Download Image</a>
         </div>
 
     </div>
